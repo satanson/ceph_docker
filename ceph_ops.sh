@@ -219,3 +219,32 @@ restart_all_ceph_mgr(){
     restart_ceph_mgr ${node}
   done
 }
+
+bootstrap_ceph_cluster(){
+  bootstrap_all_ceph_mon
+  bootstrap_all_ceph_osd
+  bootstrap_all_ceph_mgr
+}
+
+start_ceph_cluster(){
+  start_all_ceph_mon
+  start_all_ceph_osd
+  start_all_ceph_mgr
+}
+
+bootstrap_start_ceph_cluster(){
+  bootstrap_ceph_cluster
+  start_ceph_cluster
+}
+
+stop_ceph_cluster(){
+  stop_all_ceph_mgr
+  stop_all_ceph_osd
+  stop_all_ceph_mon
+}
+
+restart_ceph_cluster(){
+  restart_all_ceph_mon
+  restart_all_ceph_osd
+  restart_all_ceph_mgr
+}

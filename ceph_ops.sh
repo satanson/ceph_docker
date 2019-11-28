@@ -116,6 +116,11 @@ start_ceph_client(){
   ceph_cmd ${1:?"missing 'node'"} attach nohup /bin/bash
 }
 
+ceph_argv(){
+  local node=${1:?"missing 'node'"};shift
+  ceph_cmd ${node}  attach nohup "$*"
+}
+
 stop_ceph_clent(){
   stop_node ${1:?"missing 'node'"}
 }
@@ -180,7 +185,9 @@ restart_all_ceph_osd(){
 # ceph-mgr
 
 bootstrap_ceph_mgr(){
-  ceph_cmd ${1:?"undefined node"} attach nohup /home/ceph/scripts/bootstrap_ceph_mgr.sh
+  local node=$1;shift
+  stop_node ${node}
+  ceph_cmd ${node} attach nohup /home/ceph/scripts/bootstrap_ceph_mgr.sh
 }
 
 bootstrap_all_ceph_mgr(){
@@ -233,8 +240,15 @@ start_ceph_cluster(){
 }
 
 bootstrap_start_ceph_cluster(){
-  bootstrap_ceph_cluster
-  start_ceph_cluster
+  bootstrap_all_ceph_mon
+  start_all_ceph_mon
+  bootstrap_all_ceph_osd
+  start_all_ceph_osd
+  bootstrap_all_ceph_mgr
+  start_all_ceph_mgr
+  ceph_argv ceph_client0 ceph mon enable-msgr2
+  ceph_argv ceph_client0 ceph -s
+  ceph_argv ceph_client0 ceph df
 }
 
 stop_ceph_cluster(){

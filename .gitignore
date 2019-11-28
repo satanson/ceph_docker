@@ -2,7 +2,6 @@ data
 ceph_conf/monmap
 ceph_conf/*.keyring
 .*.swp
-*
 .*~
 *.bak
 *.bakup
@@ -10,3 +9,4 @@ ceph_conf/*.keyring
 *.logs
 *.backup
 *.dat
+ceph_docker_build/ceph-15.0.0.tar.bz2

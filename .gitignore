@@ -1,0 +1,12 @@
+data
+ceph_conf/monmap
+ceph_conf/*.keyring
+.*.swp
+*
+.*~
+*.bak
+*.bakup
+*.log
+*.logs
+*.backup
+*.dat

@@ -113,7 +113,7 @@ restart_all_ceph_mon(){
 }
 
 start_ceph_client(){
-  docker run ${1:?"missing 'node'"} attach nohup /bin/bash
+  ceph_cmd ${1:?"missing 'node'"} attach nohup /bin/bash
 }
 
 stop_ceph_clent(){

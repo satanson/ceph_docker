@@ -20,5 +20,8 @@ test -d ${mgr_data}
 keyring=${mgr_data}/${cluster}-${id}.keyring
 test -f ${keyring}
 
+rm -fr /var/log/ceph/*
 green_print "Start ceph-mgr@${id}"
+export LD_LIBRARY_PATH=/home/grakra/workspace/ceph/build/lib
+export DYLD_LIBRARY_PATH=/home/grakra/workspace/ceph/build/lib
 ceph-mgr -i ${id}

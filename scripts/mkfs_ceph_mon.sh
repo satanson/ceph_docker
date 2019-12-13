@@ -49,6 +49,7 @@ hrule
 
 green_print "Phase 3: Mkfs datadir of ceph-mon: $(whoami)@${host}:${mon_data}"
 ceph-mon --mkfs -i ${host} --monmap /etc/ceph/monmap --keyring ${keyring} --mon-data ${mon_data}
+cp /etc/ceph/ceph.mon.keyring ${mon_data}/keyring
 green_print "Done!"
 hrule
 green_print "All done!!!"

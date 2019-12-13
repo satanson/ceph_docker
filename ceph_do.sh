@@ -19,22 +19,30 @@ op_service(){
 
   if isIn ${service} "ceph_mon|ceph_osd|ceph_mgr";then
     green_print "cmd: "
-    cmd=$(selectOption "bootstrap" "bootstrap_all" "mkfs" "mkfs_all" "start" "start_all" "stop" "stop_all" "restart" "restart_all")
+    cmd=$(selectOption "bootstrap" "bootstrap_all" "mkfs" "mkfs_all" "start" "start_all" "stop" "stop_all" "restart" "restart_all" "login")
     if isIn ${cmd} "mkfs_all|bootstrap_all|bootstrap_and_mkfs_all|start_all|stop_all|restart_all";then
       green_print "exec: ${cmd}_${service}"
       confirm
       ${cmd}_${service}
-    elif isIn ${cmd} "bootstrap|start|stop|restart";then
+    elif isIn ${cmd} "bootstrap|start|stop|restart|login";then
+      green_print "node: "
       if isIn ${service} "ceph_mon";then
-        node=$(selectOption $(eval "green_print ceph_mon{0..$((${ceph_mon_num}-1))}"))
+        node=$(selectOption $(eval "echo ceph_mon{0..$((${ceph_mon_num}-1))}"))
       elif isIn ${service} "ceph_osd";then
-        node=$(selectOption $(eval "green_print ceph_osd{0..$((${ceph_osd_num}-1))}"))
+        node=$(selectOption $(eval "echo ceph_osd{0..$((${ceph_osd_num}-1))}"))
       elif isIn ${service} "ceph_mgr";then
-        node=$(selectOption $(eval "green_print ceph_mgr{0..$((${ceph_mgr_num}-1))}"))
+        node=$(selectOption $(eval "echo ceph_mgr{0..$((${ceph_mgr_num}-1))}"))
       fi
-      green_print "exec: ${cmd}_${service} ${node}"
-      confirm
-      ${cmd}_${service} ${node}
+
+      if isIn ${cmd} "login";then
+        green_print "exec: login_ceph_node ${node}"
+        confirm
+        login_ceph_node ${node}
+      else
+        green_print "exec: ${cmd}_${service} ${node}"
+        confirm
+        ${cmd}_${service} ${node}
+      fi
     else
       :
     fi
@@ -42,7 +50,7 @@ op_service(){
     green_print "cmd: "
     cmd=$(selectOption "start" "stop" "restart")
     green_print "node: "
-    node=$(selectOption $(eval "green_print ceph_client{0..$((${ceph_client_num}-1))}"))
+    node=$(selectOption $(eval "echo ceph_client{0..$((${ceph_client_num}-1))}"))
     green_print "exec: ${cmd}_${service} ${node}"
     confirm
     ${cmd}_${service} ${node}

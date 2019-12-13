@@ -6,6 +6,7 @@ source ${basedir}/scripts/functions.sh
 
 cephLocalRoot=$(cd ${basedir}/../ceph_all;pwd)
 cephDockerRoot=/home/ceph/ceph
+srcDir=/home/grakra/workspace/ceph
 
 ceph_mon_num=$(perl -ne 'print if /^\s*\d+(\.\d+){3}\s+ceph_mon\d+\s*$/' ${PWD}/hosts |wc -l);
 ceph_osd_num=$(perl -ne 'print if /^\s*\d+(\.\d+){3}\s+ceph_osd\d+\s*$/' ${PWD}/hosts |wc -l);
@@ -14,10 +15,10 @@ ceph_mds_num=$(perl -ne 'print if /^\s*\d+(\.\d+){3}\s+ceph_mds\d+\s*$/' ${PWD}/
 ceph_client_num=$(perl -ne 'print if /^\s*\d+(\.\d+){3}\s+ceph_client\d+\s*$/' ${PWD}/hosts |wc -l);
 
 dockerFlags="--rm -u ceph -w /home/ceph --privileged --net static_net0 \
-  -e PATH=/home/ceph/ceph/build/ceph-volume-virtualenv/bin:/home/ceph/ceph/build/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+  -e PATH=${srcDir}/build/ceph-volume-virtualenv/bin:${srcDir}/build/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
   -v ${PWD}/hosts:/etc/hosts \
   -v ${PWD}/ceph_conf:/etc/ceph \
-  -v ${cephLocalRoot}:${cephDockerRoot} \
+  -v ${srcDir}:${srcDir} \
   -v ${PWD}/scripts:/home/ceph/scripts" 
 
 dockerImage="ceph_build:v15.0.0"
@@ -59,8 +60,13 @@ ceph_cmd(){
   docker run ${mode} ${dockerFlags} ${extraDockerFlags} ${dockerImage} /bin/bash -c "${cmd}"
 }
 
+login_ceph_node(){
+  ceph_cmd ${1:?"missing node"} attach nohup /bin/bash
+}
+
 bootstrap_ceph_mon(){
   ceph_cmd ${1:?"undefined 'node'"} attach nohup /home/ceph/scripts/bootstrap_ceph_mon.sh
+  #ceph_cmd ${1:?"undefined 'node'"} attach nohup /bin/bash
 }
 
 mkfs_ceph_mon(){
@@ -83,6 +89,7 @@ bootstrap_all_ceph_mon(){
 start_ceph_mon(){
   local node=$1;shift
   ceph_cmd ${node} detach hup /home/ceph/scripts/start_ceph_mon.sh
+  #ceph_cmd ${node} attach nohup /bin/bash
 }
 
 start_all_ceph_mon(){
@@ -156,10 +163,9 @@ stop_all_ceph_osd(){
   done
 }
 
+
 start_ceph_osd(){
   local node=$1;shift
-  stop_node ${node}
-  #ceph_cmd ${node} attach nohup /bin/bash
   ceph_cmd ${node} detach hup /home/ceph/scripts/start_ceph_osd.sh
 }
 
@@ -212,7 +218,7 @@ stop_ceph_mgr(){
 
 stop_all_ceph_mgr(){
   for node in $(eval "echo ceph_mgr{0..$((${ceph_mgr_num}-1))}") ;do
-    start_ceph_mgr ${node}
+    stop_ceph_mgr ${node}
   done
 }
 

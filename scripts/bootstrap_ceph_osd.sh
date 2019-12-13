@@ -89,6 +89,7 @@ hrule
 green_print "Phase 5: Generate keyring for osd.${id}"
 keyring=/etc/ceph/ceph.osd.${id}.keyring
 ceph-authtool --create-keyring ${keyring} --name osd.${id} --add-key ${osd_secret}
+ceph auth add osd.${id} osd 'allow *' mon 'allow rwx' -i ${keyring}
 cat ${keyring}
 hrule
 

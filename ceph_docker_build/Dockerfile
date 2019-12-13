@@ -52,3 +52,9 @@ RUN env DEBIAN_FRONTEND=noninteractive \
                         apt-get install -y --no-install-recommends \
                         tree \
                         && rm -fr /var/cache/apt/archives/*
+
+RUN env DEBIAN_FRONTEND=noninteractive \
+                        apt-get install -y --no-install-recommends \
+                        gdb \
+                        silversearcher-ag \
+                        && rm -fr /var/cache/apt/archives/*

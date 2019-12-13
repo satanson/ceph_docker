@@ -61,38 +61,3 @@ sudo chown -R ceph:ceph ${dataDir}
 sudo chown -R ceph:ceph ${journalDir}
 echo "Done"
 hrule
-
-green_print "Phase 2: Check environment"
-
-test -d /home/ceph/osd
-test -f ${dataFile}
-test -f ${journalFile} 
-test -f ${keyring}
-#test -f ${dataDir}/fsid
-
-cat<<DONE
-host=${host}
-ip=${ip}
-id=${id}
-uuid=${dataDir}/fsid
-$(cat ${dataDir}/fsid)
-keyring=${keyring}
-$(cat ${keyring})
-osd_secret=${osd_secret}
-DONE
-echo "Done!"
-hrule
-
-green_print "Phase 3: Start ceph-osd"
-
-ceph-osd -f --conf /etc/ceph/ceph.conf -i ${id}
-sleep 2
-
-if ps -ef |grep ceph-osd >/dev/null 2>&1;then
-  green_print "ceph-osd.${id}@${host} ACTIVE"
-else
-  red_print "ceph-osd.${id}@${host} INACTIVE"
-fi
-
-echo "Done"
-hrule

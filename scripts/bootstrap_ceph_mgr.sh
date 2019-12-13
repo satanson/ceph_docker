@@ -26,7 +26,7 @@ DONE
 echo "Done!"
 hrule
 
-keyring=${mgr_data}/${cluster}-${id}.keyring
+keyring=/etc/ceph/${cluster}.mgr.${id}.keyring
 green_print "Phase 2: Auth mgr.${id} and obtain keyring ${keyring}"
 ceph auth get-or-create mgr.${id}  mon 'allow profile mgr' osd 'allow *' mds 'allow *' > ${keyring}
 cat ${keyring}

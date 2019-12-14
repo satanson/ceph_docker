@@ -58,3 +58,8 @@ RUN env DEBIAN_FRONTEND=noninteractive \
                         gdb \
                         silversearcher-ag \
                         && rm -fr /var/cache/apt/archives/*
+
+RUN mkdir -p /root/.pip
+COPY pip.conf /root/.pip/
+RUN pip install cryptography pyOpenSSL pecan
+RUN pip install Werkzeug

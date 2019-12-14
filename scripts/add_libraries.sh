@@ -5,6 +5,7 @@ sudo mkdir -p /usr/local/lib/ceph/compressor
 sudo mkdir -p /usr/local/lib/ceph/crypto
 sudo mkdir -p /usr/local/lib/ceph/erasure-code
 sudo mkdir -p /usr/local/lib/rados-classes
+sudo mkdir -p /usr/local/share/ceph
 
 sudo ln -sf /home/grakra/workspace/ceph/src/pybind/mgr /usr/local/share/ceph/mgr
 sudo ln -sf /home/grakra/workspace/ceph/build/lib/cython_modules/lib.2/rados.so /usr/local/lib/python2.7/site-packages/rados.so

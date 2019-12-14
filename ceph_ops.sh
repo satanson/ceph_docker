@@ -19,6 +19,7 @@ dockerFlags="--rm -u ceph -w /home/ceph --privileged --net static_net0 \
   -v ${PWD}/hosts:/etc/hosts \
   -v ${PWD}/ceph_conf:/etc/ceph \
   -v ${srcDir}:${srcDir} \
+  -v /lib/modules:/lib/modules \
   -v ${PWD}/scripts:/home/ceph/scripts" 
 
 dockerImage="ceph_build:v15.0.0"

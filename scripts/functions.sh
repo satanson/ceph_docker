@@ -179,3 +179,23 @@ list_tail(){
   shift
   echo ${1:-""}
 }
+
+max(){
+  local m=${1:?"missing arg"};shift
+  for e in $*;do
+    if [ $e -gt $m ];then
+      m=$e
+    fi
+  done
+  echo $m
+}
+
+min(){
+  local m=${1:?"missing arg"};shift
+  for e in $*;do
+    if [ $e -lt $m ];then
+      m=$e
+    fi
+  done
+  echo $m
+}

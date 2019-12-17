@@ -18,21 +18,14 @@ else
   exit 1
 fi
 
-sudo modprobe rbd
-docker exec -it ceph_mon0 /home/ceph/scripts/map_ceph_image.sh ${pool} ${image}
-mnt=${pool}_${image}_mnt
-mkdir -p ${mnt}
 device=$(docker exec -it ceph_mon0 rbd device list|perl -lne "print \$1 if /\\b${pool}\\b\\s*\\b${image}\\b.*?(\\S+)\\s*$/")
-
-if df -hl|grep "${mnt}";then
-  green_print "${device} already mounted on ${mnt}"
-  exit 0
+if [ -z "${device}" ];then
+  echo "${device} not exists!"
+  if df -hl |grep "${device}";then
+    sudo umount ${device}
+  fi
+else
+  docker exec -it ceph_mon0 /home/ceph/scripts/rm_rbd.sh ${pool} ${image}
 fi
 
-green_print "sudo mkfs.ext4 ${device}"
-confirm
-sudo mkfs.ext4 ${device:?"undefined"}
 
-green_print "sudo mount -t ext4 ${device} ${mnt}"
-sudo mount -t ext4 ${device} ${mnt}
-sudo chown -R ${USER}:${USER} ${mnt}

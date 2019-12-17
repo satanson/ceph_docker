@@ -13,6 +13,14 @@ ceph_osd_num=$(perl -ne 'print if /^\s*\d+(\.\d+){3}\s+ceph_osd\d+\s*$/' ${PWD}/
 ceph_mgr_num=$(perl -ne 'print if /^\s*\d+(\.\d+){3}\s+ceph_mgr\d+\s*$/' ${PWD}/hosts |wc -l);
 ceph_mds_num=$(perl -ne 'print if /^\s*\d+(\.\d+){3}\s+ceph_mds\d+\s*$/' ${PWD}/hosts |wc -l);
 ceph_client_num=$(perl -ne 'print if /^\s*\d+(\.\d+){3}\s+ceph_client\d+\s*$/' ${PWD}/hosts |wc -l);
+ceph_rgw_num=$(perl -ne 'print if /^\s*\d+(\.\d+){3}\s+ceph_rgw\d+\s*$/' ${PWD}/hosts |wc -l);
+
+ceph_mon_num_init=$(min ${ceph_mon_num} 3)
+ceph_osd_num_init=$(min ${ceph_osd_num} 3)
+ceph_mgr_num_init=$(min ${ceph_mgr_num} 3) 
+ceph_mds_num_init=$(min ${ceph_mds_num} 3)
+ceph_client_num_init=$(min ${ceph_client_num} 3)
+ceph_rgw_num_init=$(min ${ceph_rgw_num} 3)
 
 dockerFlags="--rm -u ceph -w /home/ceph --privileged --net static_net0 \
   -e PATH=${srcDir}/build/ceph-volume-virtualenv/bin:${srcDir}/build/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
@@ -76,7 +84,7 @@ mkfs_ceph_mon(){
 }
 
 mkfs_all_ceph_mon(){
-  for node in $(eval "echo ceph_mon{0..$((${ceph_mon_num}-1))}") ;do
+  for node in $(eval "echo ceph_mon{0..$((${ceph_mon_num_init}-1))}") ;do
     mkfs_ceph_mon ${node}
   done
 }
@@ -94,7 +102,7 @@ start_ceph_mon(){
 }
 
 start_all_ceph_mon(){
-  for node in $(eval "echo ceph_mon{0..$((${ceph_mon_num}-1))}") ;do
+  for node in $(eval "echo ceph_mon{0..$((${ceph_mon_num_init}-1))}") ;do
     start_ceph_mon ${node}
   done
 }
@@ -104,7 +112,7 @@ stop_ceph_mon(){
 }
 
 stop_all_ceph_mon(){
-  for node in $(eval "echo ceph_mon{0..$((${ceph_mon_num}-1))}") ;do
+  for node in $(eval "echo ceph_mon{0..$((${ceph_mon_num_init}-1))}") ;do
     stop_ceph_mon ${node}
   done
 }
@@ -115,7 +123,7 @@ restart_ceph_mon(){
 }
 
 restart_all_ceph_mon(){
-  for node in $(eval "echo ceph_mon{0..$((${ceph_mon_num}-1))}") ;do
+  for node in $(eval "echo ceph_mon{0..$((${ceph_mon_num_init}-1))}") ;do
     restart_ceph_mon ${node}
   done
 }
@@ -148,7 +156,7 @@ bootstrap_ceph_osd(){
 }
 
 bootstrap_all_ceph_osd(){
-  for node in $(eval "echo ceph_osd{0..$((${ceph_osd_num}-1))}") ;do
+  for node in $(eval "echo ceph_osd{0..$((${ceph_osd_num_init}-1))}") ;do
     bootstrap_ceph_osd ${node}
   done
 }
@@ -159,7 +167,7 @@ stop_ceph_osd(){
 }
 
 stop_all_ceph_osd(){
-  for node in $(eval "echo ceph_osd{0..$((${ceph_osd_num}-1))}") ;do
+  for node in $(eval "echo ceph_osd{0..$((${ceph_osd_num_init}-1))}") ;do
     stop_node ${node}
   done
 }
@@ -171,7 +179,7 @@ start_ceph_osd(){
 }
 
 start_all_ceph_osd(){
-  for node in $(eval "echo ceph_osd{0..$((${ceph_osd_num}-1))}") ;do
+  for node in $(eval "echo ceph_osd{0..$((${ceph_osd_num_init}-1))}") ;do
     start_ceph_osd ${node}
   done
 }
@@ -183,7 +191,7 @@ restart_ceph_osd(){
 }
 
 restart_all_ceph_osd(){
-  for node in $(eval "echo ceph_osd{0..$((${ceph_osd_num}-1))}") ;do
+  for node in $(eval "echo ceph_osd{0..$((${ceph_osd_num_init}-1))}") ;do
     restart_ceph_osd ${node}
   done
 }
@@ -198,7 +206,7 @@ bootstrap_ceph_mgr(){
 }
 
 bootstrap_all_ceph_mgr(){
-  for node in $(eval "echo ceph_mgr{0..$((${ceph_mgr_num}-1))}") ;do
+  for node in $(eval "echo ceph_mgr{0..$((${ceph_mgr_num_init}-1))}") ;do
     bootstrap_ceph_mgr ${node}
   done
 }
@@ -208,7 +216,7 @@ start_ceph_mgr(){
 }
 
 start_all_ceph_mgr(){
-  for node in $(eval "echo ceph_mgr{0..$((${ceph_mgr_num}-1))}") ;do
+  for node in $(eval "echo ceph_mgr{0..$((${ceph_mgr_num_init}-1))}") ;do
     start_ceph_mgr ${node}
   done
 }
@@ -218,7 +226,7 @@ stop_ceph_mgr(){
 }
 
 stop_all_ceph_mgr(){
-  for node in $(eval "echo ceph_mgr{0..$((${ceph_mgr_num}-1))}") ;do
+  for node in $(eval "echo ceph_mgr{0..$((${ceph_mgr_num_init}-1))}") ;do
     stop_ceph_mgr ${node}
   done
 }
@@ -229,10 +237,65 @@ restart_ceph_mgr(){
 }
 
 restart_all_ceph_mgr(){
-  for node in $(eval "echo ceph_mgr{0..$((${ceph_mgr_num}-1))}") ;do
+  for node in $(eval "echo ceph_mgr{0..$((${ceph_mgr_num_init}-1))}") ;do
     restart_ceph_mgr ${node}
   done
 }
+
+##############################################################################
+# rgw
+
+bootstrap_ceph_rgw(){
+  local node=$1;shift
+  stop_node ${node}
+  ceph_cmd ${node} attach nohup /home/ceph/scripts/bootstrap_ceph_rgw.sh
+}
+
+login_ceph_rgw(){
+  local node=$1;shift
+  stop_node ${node}
+  ceph_cmd ${node} attach nohup /bin/bash
+}
+
+bootstrap_all_ceph_rgw(){
+  for node in $(eval "echo ceph_rgw{0..$((${ceph_rgw_num_init}-1))}") ;do
+    bootstrap_ceph_rgw ${node}
+  done
+}
+
+start_ceph_rgw(){
+  ceph_cmd ${1:?"undefined node"} detach hup /home/ceph/scripts/start_ceph_rgw.sh
+}
+
+start_all_ceph_rgw(){
+  for node in $(eval "echo ceph_rgw{0..$((${ceph_rgw_num_init}-1))}") ;do
+    start_ceph_rgw ${node}
+  done
+}
+
+stop_ceph_rgw(){
+  stop_node ${1:?"undefined node"}
+}
+
+stop_all_ceph_rgw(){
+  for node in $(eval "echo ceph_rgw{0..$((${ceph_rgw_num_init}-1))}") ;do
+    stop_ceph_rgw ${node}
+  done
+}
+
+restart_ceph_rgw(){
+  stop_ceph_rgw ${1:?"undefined node"}
+  start_ceph_rgw $1
+}
+
+restart_all_ceph_rgw(){
+  for node in $(eval "echo ceph_rgw{0..$((${ceph_rgw_num_init}-1))}") ;do
+    restart_ceph_rgw ${node}
+  done
+}
+
+##########################################################################
+# cluster
 
 bootstrap_ceph_cluster(){
   bootstrap_all_ceph_mon

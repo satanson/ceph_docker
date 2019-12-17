@@ -15,9 +15,9 @@ op_cluster(){
 }
 op_service(){
   green_print "service: "
-  service=$(selectOption "ceph_mon" "ceph_osd" "ceph_mgr" "ceph_client")
+  service=$(selectOption "ceph_mon" "ceph_osd" "ceph_mgr" "ceph_client" "ceph_rgw")
 
-  if isIn ${service} "ceph_mon|ceph_osd|ceph_mgr";then
+  if isIn ${service} "ceph_mon|ceph_osd|ceph_mgr|ceph_rgw";then
     green_print "cmd: "
     cmd=$(selectOption "bootstrap" "bootstrap_all" "mkfs" "mkfs_all" "start" "start_all" "stop" "stop_all" "restart" "restart_all" "login")
     if isIn ${cmd} "mkfs_all|bootstrap_all|bootstrap_and_mkfs_all|start_all|stop_all|restart_all";then
@@ -32,6 +32,8 @@ op_service(){
         node=$(selectOption $(eval "echo ceph_osd{0..$((${ceph_osd_num}-1))}"))
       elif isIn ${service} "ceph_mgr";then
         node=$(selectOption $(eval "echo ceph_mgr{0..$((${ceph_mgr_num}-1))}"))
+      elif isIn ${service} "ceph_rgw";then
+        node=$(selectOption $(eval "echo ceph_rgw{0..$((${ceph_rgw_num}-1))}"))
       fi
 
       if isIn ${cmd} "login";then

@@ -90,7 +90,7 @@ checkArgument(){
 
 isIn(){
   local arg=${1:?"missing 'arg'"};shift
-  local alternatives=${1:?"missing 'alternatives'"};shift
+  local alternatives=${1:-"823c843e5ab037c2ca8426b5eb083da8"};shift
 
   if [ -z ${alternatives} ];then
     echo "ERROR: empty alternatives, value=${arg}" >&2

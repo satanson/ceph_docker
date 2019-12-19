@@ -295,6 +295,58 @@ restart_all_ceph_rgw(){
 }
 
 ##########################################################################
+# mds
+
+bootstrap_ceph_mds(){
+  local node=$1;shift
+  stop_node ${node}
+  ceph_cmd ${node} attach nohup /home/ceph/scripts/bootstrap_ceph_mds.sh
+}
+
+login_ceph_mds(){
+  local node=$1;shift
+  stop_node ${node}
+  ceph_cmd ${node} attach nohup /bin/bash
+}
+
+bootstrap_all_ceph_mds(){
+  for node in $(eval "echo ceph_mds{0..$((${ceph_mds_num_init}-1))}") ;do
+    bootstrap_ceph_mds ${node}
+  done
+}
+
+start_ceph_mds(){
+  ceph_cmd ${1:?"undefined node"} detach hup /home/ceph/scripts/start_ceph_mds.sh
+}
+
+start_all_ceph_mds(){
+  for node in $(eval "echo ceph_mds{0..$((${ceph_mds_num_init}-1))}") ;do
+    start_ceph_mds ${node}
+  done
+}
+
+stop_ceph_mds(){
+  stop_node ${1:?"undefined node"}
+}
+
+stop_all_ceph_mds(){
+  for node in $(eval "echo ceph_mds{0..$((${ceph_mds_num_init}-1))}") ;do
+    stop_ceph_mds ${node}
+  done
+}
+
+restart_ceph_mds(){
+  stop_ceph_mds ${1:?"undefined node"}
+  start_ceph_mds $1
+}
+
+restart_all_ceph_mds(){
+  for node in $(eval "echo ceph_mds{0..$((${ceph_mds_num_init}-1))}") ;do
+    restart_ceph_mds ${node}
+  done
+}
+
+##########################################################################
 # cluster
 
 bootstrap_ceph_cluster(){

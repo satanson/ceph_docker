@@ -12,5 +12,4 @@ keyring=/etc/ceph/${cluster}.mds.${id}.keyring
 mkdir -p ${mds_data}
 rm -fr ${mds_data:?"undefined"}/*
 
-ceph-authtool --create-keyring ${keyring} --gen-key -n mds.${id}
-ceph auth add mds.${id} osd "allow rwx" mds "allow" mon "allow profile mds" -i ${keyring}
+ceph-mds -c /etc/ceph/ceph.conf -i ${id} 

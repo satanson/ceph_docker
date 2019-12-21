@@ -9,5 +9,4 @@ ceph_conf/*.keyring
 *.logs
 *.backup
 *.dat
-ceph_docker_build/ceph-15.0.0.tar.bz2
 ceph_docker_build/ceph-15.0.0

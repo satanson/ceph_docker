@@ -24,8 +24,14 @@ RUN env DEBIAN_FRONTEND=noninteractive \
                         && rm -fr /var/cache/apt/archives/*
 RUN python --version
 COPY get-pip.py /tmp/
+RUN mkdir -p /root/.pip
+RUN mkdir -p /home/ceph/.pip
+COPY pip.conf /root/.pip/
+COPY pip.conf /home/ceph/.pip/
+
 RUN python /tmp/get-pip.py
 RUN python -m pip install --upgrade pip setuptools wheel
+RUN pip install virtualenv
 
 COPY ceph-15.0.0 /tmp/ceph
 RUN cd /tmp/ceph && ./install-deps.sh && rm -fr /var/cache/apt/archives/*
@@ -59,8 +65,6 @@ RUN env DEBIAN_FRONTEND=noninteractive \
                         silversearcher-ag \
                         && rm -fr /var/cache/apt/archives/*
 
-RUN mkdir -p /root/.pip
-COPY pip.conf /root/.pip/
 RUN pip install cryptography pyOpenSSL pecan
 RUN pip install Werkzeug
 RUN pip install bcrypt jwt==0.3.2
